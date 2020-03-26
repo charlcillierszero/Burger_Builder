@@ -7,6 +7,7 @@ import controls from '../../../constants/ingredient-controls';
 
 const buildControls = (props) => (
   <div className={classes.BuildControls}>
+    <p>Current prince: <strong>${props.price.toFixed(2)}</strong></p>
     {controls.map(control => (
       <BuildControl
         key={control.label}
@@ -17,6 +18,10 @@ const buildControls = (props) => (
         disableMore={props.disableMoreButtons[control.type]}
       />
     ))}
+    <button
+      className={classes.OrderButton}
+      disabled={!props.purchasable}
+    >ORDER NOW!</button>
   </div>
 );
 

@@ -6,4 +6,4 @@ ingredientPrices[ingredientTypes.BACON] = 0.7;
 ingredientPrices[ingredientTypes.CHEESE] = 0.4;
 ingredientPrices[ingredientTypes.MEAT] = 1.3;
 
-export default ingredientTypes;
+export default ingredientPrices;
