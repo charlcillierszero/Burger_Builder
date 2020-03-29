@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Aux from '../../../hoc/Auxiliry';
+import Aux from '../../../hoc/Auxiliry/Auxiliry';
 import Button from '../../UI/Button/Button';
 
 import buttonType from '../../../constants/button-type';
