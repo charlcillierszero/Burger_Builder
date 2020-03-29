@@ -7,12 +7,15 @@ import classes from './Modal.module.css';
 
 const modal = props => (
   <Aux>
-    <Backdrop show={props.show} clicked={props.modalClosed} />
+    <Backdrop
+      showBackdrop={props.showModal}
+      clicked={props.closeModal}
+    />
     <div
       className={classes.Modal}
       style={{
-        transform: props.show ? 'translateY(0)' : 'translateY(-100vh)',
-        opacity: props.show ? '1' : '0',
+        transform: props.showModal ? 'translateY(0)' : 'translateY(-100vh)',
+        opacity: props.showModal ? '1' : '0',
       }}
     >
       {props.children}
@@ -20,4 +23,4 @@ const modal = props => (
   </Aux>
 );
 
-export default modal;
+export default React.memo(modal);
