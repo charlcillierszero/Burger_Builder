@@ -3,7 +3,7 @@ import React from 'react';
 import classes from './BurgerIngredient.module.css';
 import ingredientTypes, { ingredientTypesPropTypeChecker } from '../../../constants/ingredient-types';
 
-const burgerIngredient = (props) => {
+const burgerIngredient = props => {
   let ingredient = null;
   switch (props.type) {
     case ingredientTypes.BREAD_BOTTOM:
