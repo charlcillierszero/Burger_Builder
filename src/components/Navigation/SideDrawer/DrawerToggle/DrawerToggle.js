@@ -5,7 +5,7 @@ import classes from './DrawerToggle.module.css';
 const drawerToggle = props => (
   <div
     onClick={props.toggleSideDrawer}
-    className={[classes.DrawerToggle, classes.MobileOnly].join(' ')}
+    className={classes.DrawerToggle}
   >
     <div></div>
     <div></div>
