@@ -1,6 +1,6 @@
-const buttonType = {
+const buttonTypes = {
   Success: 'Success',
   Danger: 'Danger'
 };
 
-export default buttonType;
+export default buttonTypes;
