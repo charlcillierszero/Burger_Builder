@@ -8,6 +8,7 @@ import Input from '../../../components/UI/Input/Input';
 import classes from './ContactData.module.css';
 import buttonTypes from '../../../constants/button-types';
 import axios from '../../../axios-orders';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import { inputSubTypes } from '../../../constants/input-types';
 import {
   createTextInput,
@@ -16,6 +17,7 @@ import {
   zipCodeRules,
 } from './util';
 import { deliveryMethods, defualtDeliveryOptions } from '../../../constants/delivery-methods';
+import { orderActions } from '../../../containers/store/actions';
 
 class ContactData extends Component {
   state = {
@@ -28,7 +30,6 @@ class ContactData extends Component {
       deliveryMethod: createSelectInput(defualtDeliveryOptions, deliveryMethods.FASTEST.value),
     },
     formIsValid: false,
-    loading: false,
   }
 
   orderHandler = (event) => {
@@ -37,39 +38,23 @@ class ContactData extends Component {
     for (let formElementIdentifier in this.state.orderForm) {
       formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
     }
-    this.setState({ loading: true });
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
       orderData: formData,
     }
-    axios.post('/orders.json', order)
-      .then(res => {
-        this.setState({ loading: false });
-        this.props.history.push('/');
-      })
-      .catch(err => this.setState({ loading: false }));
+    this.props.purchaseBurger(order);
   }
 
   checkValidity = (value, rules) => {
-    if (!rules) {
-      return true;
-    }
+    if (!rules) { return true; }
 
     const trimmedValue = value.trim();
     let isValid = true;
 
-    if (rules.required) {
-      isValid = isValid && trimmedValue !== '';
-    }
-
-    if (rules.minLength) {
-      isValid = isValid && trimmedValue.length >= rules.minLength;
-    }
-
-    if (rules.maxLength) {
-      isValid = isValid && trimmedValue.length <= rules.maxLength;
-    }
+    if (rules.required) { isValid = isValid && trimmedValue !== ''; }
+    if (rules.minLength) { isValid = isValid && trimmedValue.length >= rules.minLength; }
+    if (rules.maxLength) { isValid = isValid && trimmedValue.length <= rules.maxLength; }
 
     return isValid;
   }
@@ -87,10 +72,7 @@ class ContactData extends Component {
       formIsValid = formIsValid && updatedOrderForm[inputIdentifier].valid;
     }
 
-    this.setState({
-      orderForm: updatedOrderForm,
-      formIsValid,
-    });
+    this.setState({ orderForm: updatedOrderForm, formIsValid });
   }
 
   render() {
@@ -117,7 +99,7 @@ class ContactData extends Component {
         <Button buttonType={buttonTypes.Success} disabled={!this.state.formIsValid}>ORDER</Button>
       </form>
     );
-    if (this.state.loading) { form = <Spinner />; }
+    if (this.props.loading) { form = <Spinner />; }
 
     return (
       <div className={classes.ContactData}>
@@ -130,9 +112,16 @@ class ContactData extends Component {
 
 const mapStateToProps = state => {
   return {
-    ingredients: state.burgerBuilderReducer.ingredients,
-    totalPrice: state.burgerBuilderReducer.totalPrice,
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    loading: state.order.loading,
   }
 }
 
-export default connect(mapStateToProps)(ContactData);
+const mapDispatchToProps = dispatch => {
+  return {
+    purchaseBurger: (orderData) => dispatch(orderActions.purchaseBurger(orderData))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));
