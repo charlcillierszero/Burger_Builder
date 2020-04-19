@@ -1,0 +1,1 @@
+export const updateObject = (previousObject, updatedProperties) => ({ ...previousObject, ...updatedProperties });
