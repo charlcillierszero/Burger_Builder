@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router';
+import { connect } from 'react-redux';
 
 import Form from '../../components/UI/Form/Form';
 
 import * as inputUtils from '../../components/UI/Input/utils';
 import { inputSubTypes } from '../../constants/input-types';
+import { authActions } from '../store/actions';
 
 
 class Auth extends Component {
@@ -14,13 +15,11 @@ class Auth extends Component {
       password: inputUtils.createTextInput(inputSubTypes.PASSWORD, 'Password', 'Password', inputUtils.passwordRules),
     },
     formIsValid: false,
-    isValidated: false,
   }
 
   authHandler = (event) => {
-    console.log(event.target);
     event.preventDefault();
-    this.setState({ isValidated: true });
+    this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value);
   }
 
   inputChangedHandler = (event, inputIdentifier) => {
@@ -47,18 +46,20 @@ class Auth extends Component {
         inputChanged={this.inputChangedHandler}
         formIsValid={this.state.formIsValid}
         buttonTitle='SUBMIT'
-        formTitle='Login'
+        formTitle='Authorisation'
       />
     );
-    const validatedRedirect = this.state.isValidated ? <Redirect to='/' /> : null;
 
     return (
       <div>
-        {validatedRedirect}
         {form}
       </div>
     );
   }
 }
 
-export default Auth;
+const mapDispatchToProps = dispatch => ({
+  onAuth: (email, password) => dispatch(authActions.auth(email, password))
+});
+
+export default connect(null, mapDispatchToProps)(Auth);
