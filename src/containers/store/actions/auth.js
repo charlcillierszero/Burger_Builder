@@ -1,9 +1,7 @@
 import axios from 'axios';
 
 import * as actionTypes from './action-types';
-
-const firebaseUserSignUp = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
-const firebaseWebAPIKey = '[API_KEY]'; // where [API_KEY] refers to the Web API Key from firebase
+import * as firebaseConstants from '../../../constants/firebase-constants';
 
 const __authStart = () => ({ type: actionTypes.AUTH_START, });
 
