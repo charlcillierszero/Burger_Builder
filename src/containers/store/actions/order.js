@@ -14,9 +14,9 @@ const __purchaseBurgerFail = error => ({
 
 const __purchaseBurgerStart = () => ({ type: actionTypes.PURCHASE_BURGER_START });
 
-const purchaseBurger = orderData => dispatch => {
+const purchaseBurger = (orderData, token, userId) => dispatch => {
   dispatch(__purchaseBurgerStart());
-  axios.post('/orders.json', orderData)
+  axios.post(`/orders/${userId}.json?auth=${token}`, orderData)
     .then(res => dispatch(__purchaseBurgerSuccess(res.data.name, orderData)))
     .catch(err => dispatch(__purchaseBurgerFail(err)));
 }
@@ -38,9 +38,9 @@ const __fetchOrdersFail = (error) => ({
   error,
 });
 
-const fetchOrders = () => dispatch => {
+const fetchOrders = (token, userId) => dispatch => {
   __fetchOrdersStart();
-  axios.get('/orders.json')
+  axios.get(`/orders/${userId}.json?auth=${token}`)
     .then(res => {
       const fetchedOrders = [];
       for (let key in res.data) { fetchedOrders.push({ ...res.data[key], id: key }); }

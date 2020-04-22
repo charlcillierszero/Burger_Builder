@@ -7,6 +7,7 @@ const inputTypes = {
 const inputSubTypes = {
   TEXT: 'text',
   EMAIL: 'email',
+  PASSWORD: 'password',
 };
 
 export default inputTypes;
