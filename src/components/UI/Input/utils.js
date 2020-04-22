@@ -4,7 +4,7 @@ export const emptyRules = {};
 export const defaultRules = { required: true, minLength: 1, maxLength: 50 };
 export const zipCodeRules = { ...defaultRules, minLength: 5, maxLength: 5, isNumeric: true };
 export const emailRules = { ...defaultRules, isEmail: true };
-export const passwordRules = { ...defaultRules, isValidPassword: true };
+export const passwordRules = { ...defaultRules, minLength: 8, maxLength: 16 };
 
 const numericRegex = /^\d+$/;
 const emailRegex = /([\w]+)(((\.)([\w]+))*)@([\w]+)(\.([\w]+))(((\.)([\w]+))*)/;
@@ -22,10 +22,11 @@ export const checkValidity = (value, rules) => {
   if (rules.maxLength) { isValid = isValid && trimmedValue.length <= rules.maxLength; }
   if (rules.isNumeric) { isValid = isValid && numericRegex.test(trimmedValue); }
   if (rules.isEmail) { isValid = isValid && emailRegex.test(trimmedValue); }
-  if (rules.isValidPassword) { isValid = isValid && passwordRegex.test(trimmedValue); }
 
   return isValid;
 }
+
+export const checkValidPassword = password => passwordRegex.test(password.trim());
 
 export const createTextInput = (type, label, placeholder, validation = defaultRules) => {
   return {
@@ -36,6 +37,7 @@ export const createTextInput = (type, label, placeholder, validation = defaultRu
     validation,
     valid: false,
     touched: false,
+    hidden: false,
   };
 }
 

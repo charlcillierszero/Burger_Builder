@@ -6,6 +6,7 @@ const initialState = {
   ingredients: null,
   totalPrice: 0,
   error: false,
+  building: false
 }
 
 const __setIngredients = (state, action) => {
@@ -15,6 +16,7 @@ const __setIngredients = (state, action) => {
   for (let key in action.ingredients) { price += action.ingredients[key] * ingredientPrices[key]; }
   copiedState.totalPrice = price;
   copiedState.error = false;
+  copiedState.building = false;
   return copiedState;
 }
 
@@ -25,6 +27,7 @@ const __addIngredient = (state, action) => {
     updatedIngredients[action.ingredientType]++;
     copiedState.ingredients = updatedIngredients;
     copiedState.totalPrice = copiedState.totalPrice + ingredientPrices[action.ingredientType];
+    copiedState.building = true;
   }
   return copiedState;
 }
@@ -36,6 +39,7 @@ const __removeIngredient = (state, action) => {
     updatedIngredients[action.ingredientType]--;
     copiedState.ingredients = updatedIngredients;
     copiedState.totalPrice = copiedState.totalPrice - ingredientPrices[action.ingredientType];
+    copiedState.building = true;
   }
   return copiedState;
 }

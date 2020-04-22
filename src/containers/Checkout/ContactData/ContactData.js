@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import Form from '../../../components/UI/Form/Form';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
-import axios from '../../../axios-orders';
-import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import { inputSubTypes } from '../../../constants/input-types';
 import * as inputUtils from '../../../components/UI/Input/utils';
 import { deliveryMethods, defualtDeliveryOptions } from '../../../constants/delivery-methods';
 import { orderActions } from '../../../containers/store/actions';
+import buttonTypes from '../../../constants/button-types';
 
 class ContactData extends Component {
   state = {
@@ -21,7 +20,9 @@ class ContactData extends Component {
       email: inputUtils.createTextInput(inputSubTypes.EMAIL, 'Email', 'Your Email', inputUtils.emailRules),
       deliveryMethod: inputUtils.createSelectInput(defualtDeliveryOptions, deliveryMethods.FASTEST.value),
     },
-    formIsValid: false,
+    formButtons: {
+      submit: { buttonType: buttonTypes.Success, disabled: true, title: 'SUBMIT' },
+    },
   }
 
   orderHandler = (event) => {
@@ -35,7 +36,7 @@ class ContactData extends Component {
       price: this.props.totalPrice,
       orderData: formData,
     }
-    this.props.purchaseBurger(order);
+    this.props.purchaseBurger(order, this.props.token, this.props.userId);
   }
 
   inputChangedHandler = (event, inputIdentifier) => {
@@ -51,17 +52,25 @@ class ContactData extends Component {
       formIsValid = formIsValid && updatedOrderForm[inputIdentifier].valid;
     }
 
-    this.setState({ orderForm: updatedOrderForm, formIsValid });
+    const updatedFormButtons = { ...this.state.formButtons };
+    updatedFormButtons.submit = { ...updatedFormButtons.submit };
+    updatedFormButtons.submit.disabled = !formIsValid;
+
+    this.setState({
+      orderForm: updatedOrderForm,
+      formButtons: updatedFormButtons,
+    });
   }
 
   render() {
+    const errorMessage = this.props.error ? 'Order failed. Please try again.' : null;
     let form = (
       <Form
-        formElements={this.state.orderForm}
+        errorMessage={errorMessage}
+        inputElements={this.state.orderForm}
+        buttons={this.state.formButtons}
         onSubmit={this.orderHandler}
         inputChanged={this.inputChangedHandler}
-        formIsValid={this.state.formIsValid}
-        buttonTitle='ORDER'
         formTitle='Enter your Contact Data'
       />
     );
@@ -76,13 +85,16 @@ const mapStateToProps = state => {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
+    error: state.order.error,
+    token: state.auth.token,
+    userId: state.auth.userId
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    purchaseBurger: (orderData) => dispatch(orderActions.purchaseBurger(orderData))
+    purchaseBurger: (orderData, token, userId) => dispatch(orderActions.purchaseBurger(orderData, token, userId))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));
+export default connect(mapStateToProps, mapDispatchToProps)(ContactData);
